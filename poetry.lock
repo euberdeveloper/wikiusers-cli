@@ -272,7 +272,7 @@ requests = ">=2.25.1,<3.0.0"
 
 [[package]]
 name = "wikiusers"
-version = "1.1.0"
+version = "1.1.1"
 description = "A python3 module that uses the Mediawiki History Dump Tsv to download the datasets, analyze them, uploading them to MongoDB and postprocess them. The result is a database with tons of information on every individual user of Wikipedia"
 category = "main"
 optional = false
@@ -298,7 +298,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "2be5cc869f330590c80974d1d48d4ec5a7908df565e4594d60599418d4588049"
+content-hash = "fd4d895e937d6ff1cdc3d3c3a2ec356eb365c21c15836b3cf348ff01f08ad9ae"
 
 [metadata.files]
 astroid = [
@@ -526,8 +526,8 @@ whdtscraper = [
     {file = "whdtscraper-1.0.1.tar.gz", hash = "sha256:dd959745ee1fde94e2b827ede36ea2bbf564b8d545f17be39184e18922b2a606"},
 ]
 wikiusers = [
-    {file = "wikiusers-1.1.0-py3-none-any.whl", hash = "sha256:5d294c3fbe97fc0f6a608ee04d110e6ad392f6ad8f5ab4e7f6acd7f4ca34b4dd"},
-    {file = "wikiusers-1.1.0.tar.gz", hash = "sha256:9d5d97d2310419e752e99e014525082d997869610938ac00fc44cad852b86b27"},
+    {file = "wikiusers-1.1.1-py3-none-any.whl", hash = "sha256:bf0837b3adba78e877916cee636e85214623cad3ea2824e4892da1207380c483"},
+    {file = "wikiusers-1.1.1.tar.gz", hash = "sha256:b8355ba6bb4bfaff827025b227a6aee500e78f876e1705715bf6518ebaa66119"},
 ]
 wrapt = [
     {file = "wrapt-1.12.1.tar.gz", hash = "sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7"},
