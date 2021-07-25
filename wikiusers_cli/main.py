@@ -13,23 +13,23 @@ def cli():
 
 
 @cli.command(help='Downloads the assets if needed and saves per-user raw information on mongodb')
-@click.option('-s', '--sync-data', type=click.BOOL, default=DEFAULT_ARGUMENTS.SYNC_DATA, show_default=True, help='If the dataset will be synced before the processing (by downloading missing datasets or newest version)')
-@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS.DATASETS_DIR, show_default=True, help='The path to the datasets folder')
-@click.option('-l', '--langs', type=click.STRING, multiple=True, default=[DEFAULT_ARGUMENTS.LANGUAGE], show_default=True, help='The languages that you want to process. If "all" is passed, all the languages are selected')
-@click.option('-p', '--parallelize/--no-parallelize', is_flag=True, default=DEFAULT_ARGUMENTS.PARALLELIZE, show_default=True, help='If processing the various datasets files in parallel')
-@click.option('-n', '--n-processes', type=click.INT, default=DEFAULT_ARGUMENTS.N_PROCESSES, show_default=True, help='If parallelize is active, specifies the number of parallel processes. Default is the number of cores of the CPU')
-@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS.DATABASE_PREFIX, show_default=True, help='The name of the MongoDB database where the result will be saved')
-@click.option('-f', '--force/--no-force', is_flag=True, default=DEFAULT_ARGUMENTS.FORCE, show_default=True, help='If already populated collections will be dropped and reprocessed')
-@click.option('--skip/--no-skip', is_flag=True, default=DEFAULT_ARGUMENTS.SKIP, show_default=True, help='If already populated collections will be skipped')
-@click.option('-e', '--erase-datasets/--no-erase-datasets', is_flag=True, default=DEFAULT_ARGUMENTS.ERASE_DATASETS, show_default=True, help='If the datasets files will be erased after having been processed.')
+@click.option('-s', '--sync-data', type=click.BOOL, default=DEFAULT_ARGUMENTS['SYNC_DATA'], show_default=True, help='If the dataset will be synced before the processing (by downloading missing datasets or newest version)')
+@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS['DATASETS_DIR'], show_default=True, help='The path to the datasets folder')
+@click.option('-l', '--langs', type=click.STRING, multiple=True, default=[DEFAULT_ARGUMENTS['LANGUAGE']], show_default=True, help='The languages that you want to process. If "all" is passed, all the languages are selected')
+@click.option('-p', '--parallelize/--no-parallelize', is_flag=True, default=DEFAULT_ARGUMENTS['PARALLELIZE'], show_default=True, help='If processing the various datasets files in parallel')
+@click.option('-n', '--n-processes', type=click.INT, default=DEFAULT_ARGUMENTS['N_PROCESSES'], show_default=True, help='If parallelize is active, specifies the number of parallel processes. Default is the number of cores of the CPU')
+@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS['DATABASE_PREFIX'], show_default=True, help='The name of the MongoDB database where the result will be saved')
+@click.option('-f', '--force/--no-force', is_flag=True, default=DEFAULT_ARGUMENTS['FORCE'], show_default=True, help='If already populated collections will be dropped and reprocessed')
+@click.option('--skip/--no-skip', is_flag=True, default=DEFAULT_ARGUMENTS['SKIP'], show_default=True, help='If already populated collections will be skipped')
+@click.option('-e', '--erase-datasets/--no-erase-datasets', is_flag=True, default=DEFAULT_ARGUMENTS['ERASE_DATASETS'], show_default=True, help='If the datasets files will be erased after having been processed.')
 @click.option('-c', '--choose-langs/--no-choose-langs', is_flag=True, show_default=False, help='If the user will be asked to select the languages')
 def rawprocess(*, sync_data: bool, datasets_dir: str, langs: list[str], parallelize: bool, n_processes: int, dbname: str, force: bool, skip: bool, erase_datasets: bool, choose_langs: bool):
     if choose_langs:
-        loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS.LANGUAGE)
+        loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS['LANGUAGE'])
         available_langs = loader.get_available_langs()
         langs = select_languages(available_langs, langs)
     elif 'all' in langs:
-        loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS.LANGUAGE)
+        loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS['LANGUAGE'])
         langs = loader.get_available_langs()
 
     rawprocessor = RawProcessor(sync_data, datasets_dir, langs, parallelize,
@@ -43,10 +43,10 @@ def postprocess():
 
 
 @postprocess.command(help='Postprocesses the users of the raw collection')
-@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS.DATABASE_PREFIX, show_default=True, help='The name of the MongoDB database where the result will be saved')
-@click.option('-l', '--langs', type=click.STRING, multiple=True, default=[DEFAULT_ARGUMENTS.LANGUAGE], show_default=True, help='The languages that you want to process. If "all" is passed, all the languages are selected')
-@click.option('-b', '--batch-size', type=click.INT, default=DEFAULT_ARGUMENTS.BATCH_SIZE, show_default=True, help='Users from mongodb are taken and updated in batches. This option specifies the batch size')
-@click.option('-f', '--force/--no-force', is_flag=True, default=DEFAULT_ARGUMENTS.FORCE, show_default=True, help='If already populated collections will be dropped and reprocessed')
+@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS['DATABASE_PREFIX'], show_default=True, help='The name of the MongoDB database where the result will be saved')
+@click.option('-l', '--langs', type=click.STRING, multiple=True, default=[DEFAULT_ARGUMENTS['LANGUAGE']], show_default=True, help='The languages that you want to process. If "all" is passed, all the languages are selected')
+@click.option('-b', '--batch-size', type=click.INT, default=DEFAULT_ARGUMENTS['BATCH_SIZE'], show_default=True, help='Users from mongodb are taken and updated in batches. This option specifies the batch size')
+@click.option('-f', '--force/--no-force', is_flag=True, default=DEFAULT_ARGUMENTS['FORCE'], show_default=True, help='If already populated collections will be dropped and reprocessed')
 @click.option('-c', '--choose-langs/--no-choose-langs', is_flag=True, show_default=False, help='If the user will be asked to select the languages')
 def users(*, dbname: str, langs: list[str], batch_size: int, force: bool, choose_langs: bool):
     if choose_langs:
@@ -56,15 +56,15 @@ def users(*, dbname: str, langs: list[str], batch_size: int, force: bool, choose
         langs = PostProcessor.get_available_langs(dbname)
 
     postprocessor = PostProcessor(
-        DEFAULT_ARGUMENTS.DATASETS_DIR, dbname, langs, batch_size, force)
+        DEFAULT_ARGUMENTS['DATASETS_DIR'], dbname, langs, batch_size, force)
     postprocessor.process_users()
 
 
 @postprocess.command(help='Postprocesses the users of the raw collection')
-@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS.DATASETS_DIR, show_default=True, help='The path to the datasets folder')
-@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS.DATABASE_PREFIX, show_default=True, help='The name of the MongoDB database where the result will be saved')
-@click.option('-l', '--langs', type=click.STRING, multiple=True, default=[DEFAULT_ARGUMENTS.LANGUAGE], show_default=True, help='The languages that you want to process. If "all" is passed, all the languages are selected')
-@click.option('-b', '--batch-size', type=click.INT, default=DEFAULT_ARGUMENTS.BATCH_SIZE, show_default=True, help='Users from mongodb are taken and updated in batches. This option specifies the batch size')
+@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS['DATASETS_DIR'], show_default=True, help='The path to the datasets folder')
+@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS['DATABASE_PREFIX'], show_default=True, help='The name of the MongoDB database where the result will be saved')
+@click.option('-l', '--langs', type=click.STRING, multiple=True, default=[DEFAULT_ARGUMENTS['LANGUAGE']], show_default=True, help='The languages that you want to process. If "all" is passed, all the languages are selected')
+@click.option('-b', '--batch-size', type=click.INT, default=DEFAULT_ARGUMENTS['BATCH_SIZE'], show_default=True, help='Users from mongodb are taken and updated in batches. This option specifies the batch size')
 @click.option('-c', '--choose-langs/--no-choose-langs', is_flag=True, show_default=False, help='If the user will be asked to select the languages')
 def sex(*, datasets_dir: str, dbname: str, langs: list[str], batch_size: int, choose_langs: bool):
     if choose_langs:
@@ -74,7 +74,7 @@ def sex(*, datasets_dir: str, dbname: str, langs: list[str], batch_size: int, ch
         langs = PostProcessor.get_available_langs(dbname)
 
     postprocessor = PostProcessor(
-        datasets_dir, dbname, langs, batch_size, DEFAULT_ARGUMENTS.FORCE)
+        datasets_dir, dbname, langs, batch_size, DEFAULT_ARGUMENTS['FORCE'])
     postprocessor.process_sex()
 
 
@@ -84,17 +84,17 @@ def datasets():
 
 
 @datasets.command(help='Synces the datasets, by downloading the missing datasets')
-@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS.DATASETS_DIR, show_default=True, help='The path to the datasets folder')
-@click.option('-l', '--lang', type=click.STRING, default=DEFAULT_ARGUMENTS.LANGUAGE, show_default=True, help='The language that you want to process')
+@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS['DATASETS_DIR'], show_default=True, help='The path to the datasets folder')
+@click.option('-l', '--lang', type=click.STRING, default=DEFAULT_ARGUMENTS['LANGUAGE'], show_default=True, help='The language that you want to process')
 def sync(*, datasets_dir: str, lang: str):
     loader = MhdLoader(datasets_dir, lang)
     loader.sync_wikies()
 
 
 @datasets.command(help='Show available langs for the mhd datasets')
-@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS.DATASETS_DIR, show_default=True, help='The path to the datasets folder')
+@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS['DATASETS_DIR'], show_default=True, help='The path to the datasets folder')
 def list(*, datasets_dir: str):
-    loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS.LANGUAGE)
+    loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS['LANGUAGE'])
     langs = loader.get_available_langs()
     langs_list = "\n".join(langs)
     click.echo(click.style(
@@ -103,9 +103,9 @@ def list(*, datasets_dir: str):
 
 
 @datasets.command(help='Show downloaded langs for the mhd datasets')
-@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS.DATASETS_DIR, show_default=True, help='The path to the datasets folder')
+@click.option('-i', '--datasets-dir', type=click.STRING, default=DEFAULT_ARGUMENTS['DATASETS_DIR'], show_default=True, help='The path to the datasets folder')
 def local(*, datasets_dir: str):
-    loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS.LANGUAGE)
+    loader = MhdLoader(datasets_dir, DEFAULT_ARGUMENTS['LANGUAGE'])
     langs = loader.get_local_langs()
     langs_list = "\n".join(langs)
     click.echo(click.style(
@@ -119,7 +119,7 @@ def database():
 
 
 @database.command(help='Show raw processed languages')
-@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS.DATABASE_PREFIX, show_default=True, help='The prefix of the database name')
+@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS['DATABASE_PREFIX'], show_default=True, help='The prefix of the database name')
 def rawprocessed(*, dbname: str):
     langs = PostProcessor.get_available_langs(dbname)
     langs_list = "\n".join(langs)
@@ -129,7 +129,7 @@ def rawprocessed(*, dbname: str):
 
 
 @database.command(help='Show post processed languages')
-@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS.DATABASE_PREFIX, show_default=True, help='The prefix of the database name')
+@click.option('-d', '--dbname', type=click.STRING, default=DEFAULT_ARGUMENTS['DATABASE_PREFIX'], show_default=True, help='The prefix of the database name')
 def postprocessed(*, dbname: str):
     langs = PostProcessor.get_processed_langs(dbname)
     langs_list = "\n".join(langs)
