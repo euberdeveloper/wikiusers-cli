@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wikiusers-cli"
-version = "1.1.1"
+version = "1.1.2"
 description = "The cli of the wikiusers python module"
 authors = ["Eugenio Vinicio Berretta <euberdeveloper@gmail.com>"]
 license = "GPL"
