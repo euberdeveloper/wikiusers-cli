@@ -1,7 +1,7 @@
 import click
 
 from wikiusers import settings
-from wikiusers.dataloader import WhdtLoader
+from wikiusers.dataloader import MhdLoader
 from wikiusers.rawprocessor import RawProcessor
 from wikiusers.postprocessor import PostProcessor
 
@@ -26,11 +26,11 @@ def cli():
 @click.option('-c', '--choose-langs/--no-choose-langs', is_flag=True, show_default=False, help='If the user will be asked to select the languages')
 def rawprocess(*, sync_data: bool, datasets_dir: str, langs: list[str], parallelize: bool, n_processes: int, dbname: str, force: bool, skip: bool, erase_datasets: bool, choose_langs: bool):
     if choose_langs:
-        loader = WhdtLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
+        loader = MhdLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
         available_langs = loader.get_available_langs()
         langs = select_languages(available_langs, langs)
     elif 'all' in langs:
-        loader = WhdtLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
+        loader = MhdLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
         langs = loader.get_available_langs()
 
     rawprocessor = RawProcessor(sync_data, datasets_dir, langs, parallelize,
@@ -88,14 +88,14 @@ def datasets():
 @click.option('-i', '--datasets-dir', type=click.STRING, default=settings.DEFAULT_DATASETS_DIR, show_default=True, help='The path to the datasets folder')
 @click.option('-l', '--lang', type=click.STRING, default=settings.DEFAULT_LANGUAGE, show_default=True, help='The language that you want to process')
 def sync(*, datasets_dir: str, lang: str):
-    loader = WhdtLoader(datasets_dir, lang)
+    loader = MhdLoader(datasets_dir, lang)
     loader.sync_wikies()
 
 
-@datasets.command(help='Show available langs for the whdt datasets')
+@datasets.command(help='Show available langs for the Mhd datasets')
 @click.option('-i', '--datasets-dir', type=click.STRING, default=settings.DEFAULT_DATASETS_DIR, show_default=True, help='The path to the datasets folder')
 def list(*, datasets_dir: str):
-    loader = WhdtLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
+    loader = MhdLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
     langs = loader.get_available_langs()
     langs_list = "\n".join(langs)
     click.echo(click.style(
@@ -103,10 +103,10 @@ def list(*, datasets_dir: str):
     click.echo(click.style(f'{langs_list}', fg='blue', bold=True))
 
 
-@datasets.command(help='Show downloaded langs for the whdt datasets')
+@datasets.command(help='Show downloaded langs for the Mhd datasets')
 @click.option('-i', '--datasets-dir', type=click.STRING, default=settings.DEFAULT_DATASETS_DIR, show_default=True, help='The path to the datasets folder')
 def local(*, datasets_dir: str):
-    loader = WhdtLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
+    loader = MhdLoader(datasets_dir, settings.DEFAULT_LANGUAGE)
     langs = loader.get_local_langs()
     langs_list = "\n".join(langs)
     click.echo(click.style(
