@@ -51,6 +51,11 @@ _default_options_objects = [
         'value_type': 'path'
     },
     {
+        'name': 'DATABASE_URL',
+        'default_value': settings.DEFAULT_DATABASE_URL,
+        'value_type': 'str'
+    },
+    {
         'name': 'DATABASE_PREFIX',
         'default_value': settings.DEFAULT_DATABASE_PREFIX,
         'value_type': 'str'
